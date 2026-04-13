@@ -1,0 +1,355 @@
+apply plugin: 'base'
+
+repositories {
+   mavenCentral()
+    mavenLocal()
+
+    def codeArtifactUrl = project.hasProperty('codeArtifactUrl') ? project.property('codeArtifactUrl') : System.getenv("CODEARTIFACT_URL")
+    if (codeArtifactUrl == null || codeArtifactUrl.isEmpty()) {
+        codeArtifactUrl = 'https://cb-artifactory-606027973764.d.codeartifact.us-east-1.amazonaws.com/maven/cb-build-prod/'
+    }
+
+    def codeArtifactUser = System.getenv("CODEARTIFACT_USER")
+    def codeArtifactToken = System.getenv("CODEARTIFACT_AUTH_TOKEN")
+
+    if (codeArtifactUrl != null && codeArtifactUrl.startsWith("http") && codeArtifactUser != null && codeArtifactToken != null) {
+        maven {
+            url codeArtifactUrl
+            credentials {
+                username = codeArtifactUser
+                password = codeArtifactToken
+            }
+        }
+    }
+}
+
+configurations {
+  depLib
+}
+
+configurations {
+  spockLib
+}
+
+
+dependencyLocking {
+  lockAllConfigurations()
+}
+
+dependencies {
+  depLib (group: 'cb.gateway.amazon', name: 'cb-gateway-amazon') { 
+    version { strictly '1.0.3' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'software.amazon.pay', module: 'amazon-pay-api-sdk-java'
+  }
+    depLib (group: 'cb.gateway.spi', name: 'cb-gateway-spi') { 
+    version { strictly '1.2.9' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+  }
+  depLib (group: 'cb.gateway.paycom', name: 'cb-gateway-pay-com') { 
+    version { strictly '1.0.9' }   
+    exclude group: 'org.json', module: 'org.json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+  }
+  depLib (group: 'cb.gateway.bluesnap', name: 'cb-gateway-bluesnap') { 
+    version { strictly '1.0.4' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+  }
+  depLib (group: 'cb.gateway.braintree', name: 'cb-gateway-braintree') { 
+    version { strictly '1.1.2' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.projectlombok', module: 'lombok'
+    exclude group: 'com.braintreepayments.gateway', module: 'braintree-java'
+  }
+  depLib (group: 'cb.gateway.checkoutcom', name: 'cb-gateway-checkout_com') { 
+    version { strictly '1.1.8' } 
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+  }
+  depLib (group: 'cb.gateway.ebanx', name: 'cb-gateway-ebanx') { 
+    version { strictly '1.0.8' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.google.code.gson', module: 'gson'
+    exclude group: 'org.apache.commons', module: 'commons-lang3'
+  } 
+  depLib (group: 'cb.gateway.gocardless', name: 'cb-gateway-gocardless') { 
+    version { strictly '1.1.4' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'org.apache.httpcomponents.client5', module: 'httpclient5'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.google.code.gson', module: 'gson'
+    exclude group: 'com.gocardless', module: 'gocardless-pro'
+  }
+  depLib (group: 'cb.gateway.stripe', name: 'cb-gateway-stripe') { 
+    version { strictly '1.1.3' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'com.google.guava', module: 'guava'
+  }  
+  depLib (group: 'cb.gateway.payfurl', name: 'cb-gateway-payfurl') { 
+    version { strictly '1.2.2' }   
+    exclude group: 'com.payfurl', module: 'payfurlsdk'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group: 'org.apache.commons', module: 'commons-math3'
+    exclude group: 'com.google.guava', module: 'guava'
+  }
+  depLib (group: 'cb.gateway.adyen', name: 'cb-gateway-adyen') { 
+    version { strictly '1.0.9' }   
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'cb.gateway.spi', module: 'cb-gateway-spi'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.adyen', module: 'adyen-java-api-library'
+    exclude group: 'org.apache.commons', module: 'commons-lang3'
+  }  
+    depLib (group: 'com.payfurl', name: 'payfurlsdk', version: '1.0.20231128'){
+     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+     exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+     exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+     exclude group: 'org.apache.commons' , module: 'commons-collections4'
+     exclude group: 'com.google.guava', module: 'guava'
+     exclude group: 'commons-codec', module: 'commons-codec'
+     exclude group: 'org.apache.commons', module: 'commons-lang3'
+  }
+  depLib (group: 'cb.error.manager', name: 'cb-error-manager') {
+    version { strictly '1.0.4' }
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    exclude group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-yaml'
+  }
+  depLib (group: 'org.apache.poi', name: 'poi') { version { strictly '5.2.2' } }
+  depLib (group: 'org.apache.poi', name: 'poi-ooxml') { version { strictly '5.2.2' } }
+  depLib (group: 'org.apache.commons', name: 'commons-compress') { version { strictly '1.21' } }
+  depLib (group: 'commons-io', name: 'commons-io') { version { strictly '2.11.0' } }
+  depLib (group: 'org.apache.commons' , name: 'commons-collections4') { version { strictly '4.4' } }
+  depLib (group: 'org.apache.poi' , name: 'poi-ooxml-lite') { version { strictly '5.2.2' } }
+  depLib (group: 'org.apache.commons' , name: 'commons-math3') { version { strictly '3.6.1' } }
+  depLib (group: 'com.zaxxer' , name: 'SparseBitSet') { version { strictly '1.2' } }
+  depLib (group: 'org.apache.xmlbeans' , name: 'xmlbeans') { version { strictly '5.0.3' } }
+  depLib (group: 'com.github.virtuald' , name: 'curvesapi') { version { strictly '1.07' } }
+  depLib (group: 'com.twilio.sdk', name: 'twilio') { version { strictly '7.8.0' } }
+  depLib (group: 'com.github.fge', name: 'json-schema-core') { version { strictly '1.2.5' } }
+  depLib (group: 'com.auth0', name: 'java-jwt') { version { strictly '3.1.0' } }
+  depLib (group: 'org.bitbucket.b_c', name: 'jose4j') { version { strictly '0.7.10' } }
+  depLib (group: 'com.maxmind.geoip2', name: 'geoip2') { version { strictly '2.8.0' } }
+  depLib (group: 'com.googlecode.libphonenumber', name: 'libphonenumber') { version { strictly '8.9.2' } }
+  depLib (group: 'com.github.fge', name: 'msg-simple') { version { strictly '1.1' } }
+  depLib (group: 'org.apache.pdfbox', name: 'pdfbox') { version { strictly '2.0.17' } }
+  depLib (group: 'au.com.flyingkite', name: 'mobiledetect') { version { strictly '1.1.0' } }
+  depLib (group: 'com.github.fge', name: 'uri-template') { version { strictly '0.9' } }
+  depLib (group: 'com.stripe', name: 'stripe-java') { version { strictly '10.9.0' } }
+  depLib (group: 'org.jeasy', name: 'easy-rules-core') { 
+    version { strictly '4.1.0' } 
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'org.slf4j', module: 'slf4j-simple'
+    exclude group: 'org.mockito', module: 'mockito-core'
+    exclude group: 'org.assertj', module: 'assertj-core'
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'com.github.stefanbirkner', module: 'system-lambda'
+    exclude group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-yaml'
+  }
+  depLib (group: 'com.adyen', name: 'adyen-java-api-library') {
+    version { strictly '18.1.3' }
+    exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
+    exclude group: 'io.swagger.core.v3', module: 'swagger-models'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+  depLib (group: 'com.github.fge', name: 'btf') { version { strictly '1.2' } }
+  depLib (group: 'com.github.fge', name: 'jackson-coreutils') { version { strictly '1.8' } }
+  depLib (group: 'com.squareup.okhttp3', name: 'logging-interceptor') { version { strictly '3.14.4' } }
+  depLib (group: 'com.squareup.okhttp3', name: 'okhttp') { version { strictly '3.14.4' } }
+  depLib (group: 'com.cybersource', name: 'cybersource-rest-client-java') { 
+    version { strictly '0.0.51' } 
+    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15to18'
+  }
+  depLib (group: 'io.swagger', name: 'swagger-annotations') { version { strictly '1.5.18' } }
+  depLib (group: 'com.cybersource', name: 'AuthenticationSdk') { 
+    version { strictly '0.0.24' } 
+    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15to18'
+  }
+  depLib (group: 'com.google.zxing', name: 'core') { version { strictly '3.5.2' } }
+  depLib (group: 'com.google.zxing', name: 'javase') { version { strictly  '3.5.2' } }
+  depLib (group: 'com.sendgrid', name: 'sendgrid-java') {version {strictly '4.10.2'} }
+  depLib (group: 'com.paypal.sdk', name: 'merchantsdk') { version { strictly '2.15.122' } }
+  depLib (group: 'com.paypal.sdk', name: 'paypal-core') { version { strictly '1.7.2' } }
+  depLib (group: 'com.jcraft', name: 'jsch') { version { strictly '0.1.54' } }
+  depLib (group: 'javax.xml.bind', name: 'jaxb-api') { version { strictly '2.2.7' } }
+  depLib (group: 'org.bouncycastle', name: 'bcprov-ext-jdk15on') { version { strictly '1.51' } }
+  depLib (group: 'org.bouncycastle', name: 'bcpkix-jdk15on') { version { strictly '1.51' } }
+  depLib (group: 'com.braintreepayments.gateway', name: 'braintree-java') { 
+    version { strictly '3.25.0' }
+    exclude group: 'org.apache.commons', module: 'commons-csv'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'org.junit.vintage', module:'junit-vintage-engine'
+  }
+  depLib (group: 'commons-httpclient', name: 'commons-httpclient') { version { strictly '3.0.1' } }
+  depLib (group: 'com.github.fge', name: 'json-schema-validator') { version { strictly '2.2.6' } }
+  depLib (group: 'com.github.rholder', name: 'guava-retrying') { version { strictly '2.0.0' } }
+  depLib (group: 'com.squareup.okhttp', name: 'okhttp') { version { strictly '2.7.5' } }
+  depLib (group: 'com.squareup.okio', name: 'okio') { version { strictly '1.17.2' } }
+  depLib (group: 'org.bouncycastle', name: 'bcpg-jdk15on') { version { strictly '1.51' } }
+  depLib group: 'io.github.resilience4j', name: 'resilience4j-retry', version: '1.7.0'
+  depLib (group: 'be.woutschoovaerts', name: 'mollie') { 
+    version { strictly '3.7.0' } 
+
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+
+  }
+
+  depLib (group: 'com.intuit.quickbooks-online', name: 'ipp-v3-java-devkit', version: '6.2.0') {
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.ow2.asm', module: 'asm'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+  depLib (group: 'com.intuit.quickbooks-online', name: 'ipp-v3-java-data', version : '6.2.0') {
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.ow2.asm', module: 'asm'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+  depLib (group: 'com.intuit.quickbooks-online', name: 'oauth2-platform-api', version : '6.2.0') {
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    exclude group: 'org.json', module: 'json'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.ow2.asm', module: 'asm'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+  depLib (group: 'com.intuit.quickbooks-online', name: 'payments-api', version: '6.2.0') {
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+    exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    exclude group: 'org.slf4j', module: 'slf4j-api'
+    exclude group: 'org.ow2.asm', module: 'asm'
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+  }
+
+  depLib (group: 'com.razorpay', name: 'razorpay-java') {
+    version { strictly '1.3.9' }
+
+    exclude group: 'org.json', module: 'json'
+
+  }
+  depLib (group: 'org.keycloak', name: 'keycloak-events-api') { version { strictly '1.8.1.Final' } }
+  depLib (group: 'com.nimbusds', name: 'oauth2-oidc-sdk') { version { strictly '9.43.1' } }
+  depLib (group: 'org.modelmapper', name: 'modelmapper') { version { strictly '3.1.0' } }
+  depLib (group: 'org.wso2.charon', name: 'org.wso2.charon3.core', version: '4.0.18') {
+    exclude group: 'org.json.wso2', module: 'json'
+    exclude group: 'org.ops4j.pax.logging', module: 'pax-logging-api'
+  }
+
+
+
+  depLib (group: 'org.opensearch.client', name: 'opensearch-rest-client', version: '1.3.7') {
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+  }
+
+  depLib (group: 'org.opensearch.client', name: 'opensearch-java', version: '1.0.0') {
+    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+  }
+
+
+  depLib (group: 'com.gocardless', name: 'gocardless-pro') {
+    version { strictly '5.18.1' }
+  }
+
+  //qr bill generator
+  depLib (group: 'net.codecrete.qrbill', name: 'qrbill-generator') {
+    version { strictly '3.1.0' }
+  }
+
+  depLib (group: 'io.nayuki', name: 'qrcodegen') {
+    version { strictly '1.8.0' }
+  }
+
+  //jKnack dependencies for PDF mustache
+  depLib (group: 'com.github.jknack', name: 'handlebars') {
+    version { strictly '4.3.1' }
+  }
+
+  depLib (group: 'com.github.jknack', name: 'handlebars-helpers') {
+    version { strictly '4.3.1' }
+  }
+
+  depLib (group: 'com.github.jknack', name: 'handlebars-proto') {
+    version { strictly '4.3.1' }
+  }
+
+  depLib (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.14.0') {
+    exclude group: 'org.yaml', module: 'snakeyaml'
+  }
+
+
+   // Spock dependencies
+  spockLib group: 'junit', name: 'junit', version : '4.12'
+  spockLib group: 'cglib', name: 'cglib-nodep', version : '2.2.2'
+  spockLib group: 'org.powermock', name: 'powermock-core', version : '1.6.6'
+  spockLib group: 'org.objenesis', name: 'objenesis', version : '2.6'
+  spockLib (group: 'org.spockframework', name: 'spock-core') {
+    version { strictly '1.0-groovy-2.4' }
+    // We already have groovy in spock_lib
+    exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+  }
+  spockLib group: 'org.mockito', name: 'mockito-inline', version : '3.4.4'
+  spockLib group: 'org.powermock', name: 'powermock-reflect', version : '1.6.6'
+  spockLib group: 'org.javassist', name: 'javassist', version : '3.21.0-GA'
+  spockLib group: 'org.easymock', name: 'easymock', version : '3.4'
+  spockLib group: 'org.hamcrest', name: 'hamcrest-core', version : '1.3'
+  spockLib group: 'org.ow2.asm', name: 'asm', version : '5.0.3'
+}
+
+task downloadLib(type: Copy) {
+  from configurations.depLib
+  into './app_lib'
+}
+
+task downloadSpock(type: Copy) {
+  from configurations.spockLib
+  into './spock_lib/'
+}
+
+task download {
+  dependsOn downloadLib
+  dependsOn downloadSpock
+}
